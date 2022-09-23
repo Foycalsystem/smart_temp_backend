@@ -862,7 +862,7 @@ module.exports = {
             for(let user of users){
                 const createdTime = new Date(user.createdAt).getTime() / 1000 // seconds
 
-                if(!user.isVerified && !user.isAdmin && currentTime - createdTime >= expiresIn){
+                if(!user.isVerified && currentTime - createdTime >= expiresIn){
                     ids.push(user._id.toString())
                 }
             }
@@ -870,8 +870,8 @@ module.exports = {
             // delete the users
             await User.deleteMany({isVerified: false})
 
-            // delete all their deposit hx
-            //...await User.deleteMany({userId_: ids})
+            // delete from Contest database
+            await Contest.deleteMany({userId: ids});
 
             // delete all their withdrawal hx
             //...await User.deleteMany({userId_: ids})
@@ -919,8 +919,8 @@ module.exports = {
             // Find and delete the account 
             const user = await User.findByIdAndDelete({_id: id})
 
-            // delete his deposit hx
-            //...await User.findByIdAndDelete({userId_: id})
+            // delete from Contest database
+            await Contest.findOneAndDelete({userId: id})
 
             // delete his withdrawal hx
             //...await User.findByIdAndDelete({userId_: id})
@@ -955,8 +955,8 @@ module.exports = {
             // delete all users
             await User.deleteMany({_id: ids})
 
-             // delete all their deposit hx
-            //...await User.deleteMany({userId_: ids})
+             // delete from Contest Database
+            await Contest.deleteMany({userId: ids})
 
             // delete all their withdrawal hx
             //...await User.deleteMany({userId_: ids})
